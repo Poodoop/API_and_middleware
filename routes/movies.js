@@ -3,7 +3,9 @@ var router = express.Router()
 
 var pool = require('../queries.js')
 
-router.get('/', function (req, res) {
+var auth = require('../middleware/authMiddleware.js');
+
+router.get('/', auth, function (req, res) {
     const limit = parseInt(req.query.limit) || 10
     const page = parseInt(req.query.page) || 1
 
@@ -20,7 +22,7 @@ router.get('/', function (req, res) {
 })
 
 
-router.post('/', function (req, res) {
+router.post('/', auth, function (req, res) {
     const { title, genres, year } = req.body
     pool.query(
         'INSERT INTO movies ("title", "genres", "year") VALUES ($1, $2, $3)', [title, genres, year], (error, results) => {
@@ -32,7 +34,7 @@ router.post('/', function (req, res) {
     )
 })
 
-router.delete('/:id', function (req, res) {
+router.delete('/:id', auth, function (req, res) {
     const movieId = req.params.id
     pool.query(
         'DELETE FROM movies WHERE id = $1', [movieId], (error, results) => {
@@ -45,7 +47,7 @@ router.delete('/:id', function (req, res) {
 })
 
 
-router.put('/:id', function (req, res) {
+router.put('/:id', auth, function (req, res) {
     const movieId = req.params.id
     const { year } = req.body
     pool.query(

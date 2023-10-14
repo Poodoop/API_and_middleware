@@ -1,7 +1,10 @@
 var express = require('express')
 var bodyParser = require('body-parser')
+var morgan = require('morgan')
 
 var app = express()
+
+app.use(morgan('common'));
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
