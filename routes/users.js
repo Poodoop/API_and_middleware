@@ -3,7 +3,7 @@ var router = express.Router()
 
 const jwt = require('jsonwebtoken')
 
-var pool = require('../queries.js')
+var pool = require('../config/queries.js')
 
 const signToken = (data) => {
     const token = jwt.sign(data, 'koderahasia', { expiresIn: '1h' });

@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 
-var pool = require('../queries.js')
+var pool = require('../config/queries.js')
 
 var auth = require('../middleware/authMiddleware.js');
 
