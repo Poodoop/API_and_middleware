@@ -1,18 +1,22 @@
 var express = require('express')
 var router = express.Router()
 
-const jwt = require('jsonwebtoken')
+var jwt = require('jsonwebtoken')
 
 var pool = require('../config/queries.js')
 
-const signToken = (data) => {
+var auth = require('../middleware/authMiddleware.js');
+
+const signToken = function (data) {
     const token = jwt.sign(data, 'koderahasia', { expiresIn: '1h' });
     return token;
 };
 
-router.post('/login', (req, res) => {
+router.post('/login', function (req, res) {
+    const { email, password } = req.body;
     pool.query(
-        `SELECT * FROM users WHERE email = $1 AND password = $2`, [req.body.email, req.body.password], (error, results) => {
+        `SELECT * FROM users WHERE email = $1 AND password = $2`,
+        [email, password], (error, results) => {
             if (error) {
                 return res.status(500).json({ error: 'Internal server error' })
             } else {
@@ -23,10 +27,11 @@ router.post('/login', (req, res) => {
     )
 })
 
-router.post('/register', (req, res) => {
+router.post('/register', function (req, res) {
     const { id, email, gender, role, password } = req.body;
     pool.query(
-        'INSERT INTO users (id, email, gender, role, password) VALUES ($1, $2, $3, $4, $5) RETURNING *', [id, email, gender, role, password], (error, results) => {
+        'INSERT INTO users (id, email, gender, role, password) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [id, email, gender, role, password], (error, results) => {
             if (error) {
                 return res.status(500).json({ error: 'Internal server error' });
             }
@@ -42,11 +47,40 @@ router.get('/', function (req, res) {
     const startIndex = (page - 1) * limit
 
     pool.query(
-        'SELECT id, email, gender, role, password FROM users OFFSET $1 LIMIT $2', [startIndex, limit], (error, results) => {
+        'SELECT id, email, gender, role, password FROM users OFFSET $1 LIMIT $2',
+        [startIndex, limit], (error, results) => {
             if (error) {
                 return res.status(500).json({ error: 'Internal server error' })
             }
             res.json(results.rows)
+        }
+    )
+})
+
+router.delete('/:id', auth, function (req, res) {
+    const userId = req.params.id
+    pool.query(
+        'DELETE FROM users WHERE id = $1',
+        [userId], (error, results) => {
+            if (error) {
+                return res.status(500).json({ error: 'Internal server error' })
+            }
+            res.status(201).json({ status: 'success' })
+        }
+    )
+})
+
+
+router.put('/:id', auth, function (req, res) {
+    const userId = req.params.id
+    const { password } = req.body
+    pool.query(
+        'UPDATE users SET password = $1 WHERE id = $2',
+        [password, userId], (error, results) => {
+            if (error) {
+                return res.status(500).json({ error: 'Internal server error' })
+            }
+            res.status(201).json({ status: 'success' })
         }
     )
 })

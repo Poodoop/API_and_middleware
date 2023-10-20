@@ -12,7 +12,8 @@ router.get('/', auth, function (req, res) {
     const startIndex = (page - 1) * limit
 
     pool.query(
-        'SELECT * FROM movies OFFSET $1 LIMIT $2', [startIndex, limit], (error, results) => {
+        'SELECT * FROM movies OFFSET $1 LIMIT $2', 
+        [startIndex, limit], (error, results) => {
             if (error) {
                 return res.status(500).json({ error: 'Internal server error' })
             }
@@ -25,7 +26,8 @@ router.get('/', auth, function (req, res) {
 router.post('/', auth, function (req, res) {
     const { title, genres, year } = req.body
     pool.query(
-        'INSERT INTO movies ("title", "genres", "year") VALUES ($1, $2, $3)', [title, genres, year], (error, results) => {
+        'INSERT INTO movies ("title", "genres", "year") VALUES ($1, $2, $3)', 
+        [title, genres, year], (error, results) => {
             if (error) {
                 return res.status(500).json({ error: 'Internal server error' })
             }
@@ -37,7 +39,8 @@ router.post('/', auth, function (req, res) {
 router.delete('/:id', auth, function (req, res) {
     const movieId = req.params.id
     pool.query(
-        'DELETE FROM movies WHERE id = $1', [movieId], (error, results) => {
+        'DELETE FROM movies WHERE id = $1', 
+        [movieId], (error, results) => {
             if (error) {
                 return res.status(500).json({ error: 'Internal server error' })
             }
@@ -51,7 +54,8 @@ router.put('/:id', auth, function (req, res) {
     const movieId = req.params.id
     const { year } = req.body
     pool.query(
-        'UPDATE movies SET year = $1 WHERE id = $2', [year, movieId], (error, results) => {
+        'UPDATE movies SET year = $1 WHERE id = $2', 
+        [year, movieId], (error, results) => {
             if (error) {
                 return res.status(500).json({ error: 'Internal server error' })
             }
