@@ -3,6 +3,7 @@ var bodyParser = require('body-parser')
 var morgan = require('morgan')
 var swaggerJsdoc = require('swagger-jsdoc')
 var swaggerUi = require('swagger-ui-express')
+var path = require('path')
 
 var app = express()
 
@@ -37,5 +38,7 @@ app.use('/movies', movies)
 
 var users = require('./routes/users.js')
 app.use('/users', users)
+
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.listen(3000)
