@@ -1,1 +1,2 @@
-/* Replace with your SQL commands */
+ALTER TABLE movies
+DROP COLUMN images;

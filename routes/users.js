@@ -5,19 +5,19 @@ var jwt = require('jsonwebtoken')
 
 var pool = require('../config/queries.js')
 
-var auth = require('../middleware/authMiddleware.js');
+var auth = require('../middleware/authMiddleware.js')
 
 const signToken = function (data) {
     if (!data) {
-        throw new Error("Data is required to sign a token.");
+        throw new Error("Data is required to sign a token.")
       }
       
-    const token = jwt.sign(data, 'koderahasia', { expiresIn: '1h' });
-    return token;
-};
+    const token = jwt.sign(data, 'koderahasia', { expiresIn: '1h' })
+    return token
+}
 
 router.post('/login', function (req, res) {
-    const { email, password } = req.body;
+    const { email, password } = req.body
     pool.query(
         `SELECT * FROM users WHERE email = $1 AND password = $2`,
         [email, password], (error, results) => {
@@ -32,17 +32,17 @@ router.post('/login', function (req, res) {
 })
 
 router.post('/register', function (req, res) {
-    const { id, email, gender, role, password } = req.body;
+    const { id, email, gender, role, password } = req.body
     pool.query(
         'INSERT INTO users (id, email, gender, role, password) VALUES ($1, $2, $3, $4, $5) RETURNING *',
         [id, email, gender, role, password], (error, results) => {
             if (error) {
-                return res.status(500).json({ error: 'Internal server error' });
+                return res.status(500).json({ error: 'Internal server error' })
             }
-            res.status(201).json({ status: 'User registered successfully' });
+            res.status(201).json({ status: 'User registered successfully' })
         }
-    );
-});
+    )
+})
 
 router.get('/', function (req, res) {
     const limit = parseInt(req.query.limit) || 10

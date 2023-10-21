@@ -39,6 +39,6 @@ app.use('/movies', movies)
 var users = require('./routes/users.js')
 app.use('/users', users)
 
-app.use('/upload', express.static(path.join(__dirname, 'upload')))
+app.use('/images', express.static(path.join(__dirname, 'upload')))
 
 app.listen(3000)

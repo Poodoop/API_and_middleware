@@ -1,2 +1,2 @@
 ALTER TABLE movies
-ADD COLUMN images BYTEA;
+ADD COLUMN images VARCHAR(100);
