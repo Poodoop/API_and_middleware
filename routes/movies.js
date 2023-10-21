@@ -7,18 +7,7 @@ var router = express.Router()
 var pool = require('../config/queries.js')
 
 const { signToken, verifyToken } = require('../middleware/authMiddleware')
-
-const diskStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../upload'))
-    },
-    filename: function (req, file, cb) {
-        cb(
-            null,
-            file.fieldname + '-' + Date.now() + path.extname(file.originalname)
-        )
-    },
-})
+const diskStorage = require('../middleware/fileMiddleware')
 
 router.get('/', function (req, res) {
     const limit = parseInt(req.query.limit) || 10
