@@ -1,20 +1,9 @@
 var express = require('express')
 var router = express.Router()
 
-var jwt = require('jsonwebtoken')
-
 var pool = require('../config/queries.js')
 
-var auth = require('../middleware/authMiddleware.js')
-
-const signToken = function (data) {
-    if (!data) {
-        throw new Error("Data is required to sign a token.")
-      }
-      
-    const token = jwt.sign(data, 'koderahasia', { expiresIn: '1h' })
-    return token
-}
+const { signToken, verifyToken } = require('../middleware/authMiddleware');
 
 router.post('/login', function (req, res) {
     const { email, password } = req.body
@@ -61,7 +50,7 @@ router.get('/', function (req, res) {
     )
 })
 
-router.delete('/:id', auth, function (req, res) {
+router.delete('/:id', verifyToken, function (req, res) {
     const userId = req.params.id
     pool.query(
         'DELETE FROM users WHERE id = $1',
@@ -75,7 +64,7 @@ router.delete('/:id', auth, function (req, res) {
 })
 
 
-router.put('/:id', auth, function (req, res) {
+router.put('/:id', verifyToken, function (req, res) {
     const userId = req.params.id
     const { password } = req.body
     pool.query(

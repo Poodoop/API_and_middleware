@@ -1,24 +1,24 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
-const verifyToken = (token) => {
-  const data = jwt.verify(token, 'koderahasia')
-  return data
+function signToken(data) {
+  const token = jwt.sign(data, 'koderahasia', { expiresIn: '1h' });
+  return token;
 }
 
-const authMiddleware = (req, res, next) => {
-  const token = req.body.token
+function verifyToken(req, res, next) {
+  const token = req.body.token;
 
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' })
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  const data = verifyToken(token)
-
-  if (!data) {
-    return res.status(401).json({ message: 'Unauthorized' })
-  }
-  
-  next();
+  jwt.verify(token, 'koderahasia', (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    req.user = decoded;
+    next();
+  });
 }
 
-module.exports = authMiddleware;
+module.exports = { signToken, verifyToken };

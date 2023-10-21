@@ -2,12 +2,11 @@ var express = require('express')
 var path = require('path')
 var multer = require('multer')
 
-
 var router = express.Router()
 
 var pool = require('../config/queries.js')
 
-var auth = require('../middleware/authMiddleware.js')
+const { signToken, verifyToken } = require('../middleware/authMiddleware')
 
 const diskStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -38,7 +37,7 @@ router.get('/', function (req, res) {
     )
 })
 
-router.post('/', auth, function (req, res) {
+router.post('/', verifyToken, function (req, res) {
     const { title, genres, year } = req.body
     pool.query(
         'INSERT INTO movies ("title", "genres", "year") VALUES ($1, $2, $3)',
@@ -51,7 +50,7 @@ router.post('/', auth, function (req, res) {
     )
 })
 
-router.delete('/:id', auth, function (req, res) {
+router.delete('/:id', verifyToken, function (req, res) {
     const movieId = req.params.id
     pool.query(
         'DELETE FROM movies WHERE id = $1',
@@ -64,7 +63,7 @@ router.delete('/:id', auth, function (req, res) {
     )
 })
 
-router.put('/:id', auth, function (req, res) {
+router.put('/:id', verifyToken, function (req, res) {
     const movieId = req.params.id
     const { year } = req.body
     pool.query(
