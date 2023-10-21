@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "driver": "pg",
+        "user": "postgres",
+        "password": "postgres1234",
+        "host": "localhost",
+        "database": "movies_database"
+    }
+}
+
