@@ -1,6 +1,7 @@
 const { signToken, verifyToken } = require('../middleware/authMiddleware');
 const moviesModel = require('../models/moviesModel');
 const usersModel = require('../models/usersModel');
+var path = require('path');
 
 class Controller {
     static async getMovies(req, res) {
