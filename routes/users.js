@@ -8,6 +8,10 @@ var pool = require('../config/queries.js')
 var auth = require('../middleware/authMiddleware.js');
 
 const signToken = function (data) {
+    if (!data) {
+        throw new Error("Data is required to sign a token.");
+      }
+      
     const token = jwt.sign(data, 'koderahasia', { expiresIn: '1h' });
     return token;
 };
